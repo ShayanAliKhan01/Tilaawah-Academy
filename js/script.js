@@ -7,6 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.querySelector('.sidebar');
     const topHeaderToggleBtn = document.querySelector('.top-header-toggle-btn');
 
+    // Create sidebar overlay element dynamically (works on all pages without HTML changes)
+    const overlay = document.createElement('div');
+    overlay.className = 'sidebar-overlay';
+    document.body.appendChild(overlay);
+
     // Load persisted state or default to expanded ('false')
     const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
     
@@ -24,9 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const nowCollapsed = !body.classList.contains('sidebar-expanded');
             localStorage.setItem('sidebar-collapsed', nowCollapsed ? 'true' : 'false');
         } else {
-            // Mobile: toggle drawer slide-in
+            // Mobile: toggle drawer slide-in with overlay
             if (sidebar) {
-                sidebar.classList.toggle('open');
+                const isOpen = sidebar.classList.toggle('open');
+                overlay.classList.toggle('active', isOpen);
             }
         }
     }
@@ -35,11 +41,20 @@ document.addEventListener('DOMContentLoaded', () => {
         topHeaderToggleBtn.addEventListener('click', toggleSidebar);
     }
 
-    // Close sidebar when clicking outside on mobile
+    // Close sidebar when clicking the overlay
+    overlay.addEventListener('click', () => {
+        if (sidebar) {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+    });
+
+    // Close sidebar when clicking outside on mobile (legacy fallback)
     document.addEventListener('click', (e) => {
         if (window.innerWidth <= 992 && sidebar && sidebar.classList.contains('open')) {
-            if (!sidebar.contains(e.target) && !topHeaderToggleBtn.contains(e.target)) {
+            if (!sidebar.contains(e.target) && topHeaderToggleBtn && !topHeaderToggleBtn.contains(e.target)) {
                 sidebar.classList.remove('open');
+                overlay.classList.remove('active');
             }
         }
     });

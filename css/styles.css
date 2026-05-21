@@ -1536,19 +1536,54 @@ body.sidebar-expanded .sidebar-social {
 /* ==========================================================================
    RESPONSIVE MEDIA QUERIES
    ========================================================================== */
+
+/* --- Sidebar Overlay (mobile drawer backdrop) --- */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* --- Pricing Grid Two-Column Variant --- */
+.pricing-grid-two {
+    grid-template-columns: repeat(2, 1fr) !important;
+    max-width: 700px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
 @media (max-width: 992px) {
+    /* Layout */
     body {
         --current-sidebar-width: 0px !important;
     }
 
+    /* Sidebar becomes a slide-in drawer */
     .sidebar {
         width: var(--sidebar-width-expanded) !important;
         transform: translateX(-100%);
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1001;
     }
 
     .sidebar.open {
         transform: translateX(0);
+    }
+
+    .sidebar-overlay {
+        display: block;
     }
 
     .sidebar-nav a span {
@@ -1562,42 +1597,70 @@ body.sidebar-expanded .sidebar-social {
         width: auto !important;
     }
 
-
-
+    /* Main content fills full width */
     .main-content {
         margin-left: 0 !important;
+        width: 100% !important;
     }
 
+    /* Top header */
+    .top-header {
+        padding: 0 1.25rem;
+    }
+
+    /* Reduce container padding */
+    .container {
+        padding: 0 1.25rem;
+    }
+
+    /* Hero */
     .hero-slider {
         height: 46vh;
+        min-height: 280px;
     }
 
+    /* Flex section containers → stack vertically */
     .steps-container,
     .about-container,
-    .why-us-container,
-    .contact-grid {
+    .why-us-container {
         flex-direction: column;
-        gap: 3rem;
+        gap: 2.5rem;
+    }
+
+    /* Contact grid → single column (it's CSS Grid, not Flex) */
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
     }
 
     .about-container.reverse {
         flex-direction: column;
     }
 
+    /* Images in those sections → full-width, centred */
     .steps-image,
     .about-image,
     .why-us-image {
         width: 100%;
-        max-width: 500px;
+        max-width: 480px;
         margin: 0 auto;
+        flex: none !important;
     }
 
+    /* Pricing grid → 2-col on tablet */
     .pricing-grid {
         grid-template-columns: repeat(2, 1fr);
-        max-width: 800px;
+        max-width: 720px;
         margin: 3rem auto 0;
     }
 
+    /* 2-col variant stacks on 992 */
+    .pricing-grid-two {
+        grid-template-columns: 1fr !important;
+        max-width: 380px !important;
+    }
+
+    /* Pre-footer → single column */
     .prefooter-grid {
         grid-template-columns: 1fr;
         max-width: 500px;
@@ -1607,6 +1670,7 @@ body.sidebar-expanded .sidebar-social {
         padding: 0.9rem 0;
     }
 
+    /* Footer → 2-col on tablet */
     .footer-grid {
         grid-template-columns: 1fr 1fr;
         gap: 2.5rem;
@@ -1616,14 +1680,80 @@ body.sidebar-expanded .sidebar-social {
         grid-column: span 2;
         justify-content: center;
     }
+
+    /* Section title sizing */
+    .section-title {
+        font-size: 2.1rem;
+    }
 }
 
 @media (max-width: 768px) {
-    .pricing-grid {
-        grid-template-columns: 1fr;
-        max-width: 400px;
+    /* Container padding */
+    .container {
+        padding: 0 1rem;
     }
 
+    /* Header */
+    .top-header {
+        padding: 0 1rem;
+    }
+
+    /* Hero slider */
+    .hero-slider {
+        height: 52vh;
+        min-height: 260px;
+    }
+
+    /* Hide slider arrows on small screens — content not clipped */
+    .slider-arrow {
+        display: none;
+    }
+
+    /* Hero content box — wider, less padding */
+    .hero-slide-content {
+        width: 92%;
+        padding: 1.5rem 1.25rem;
+    }
+
+    .hero-slide-content h1 {
+        font-size: 2rem;
+    }
+
+    .hero-slide-content p {
+        font-size: 1rem;
+        margin-bottom: 1.2rem;
+    }
+
+    /* Section title */
+    .section-title {
+        font-size: 1.85rem;
+    }
+
+    /* Page banners */
+    .page-banner h1 {
+        font-size: 2.2rem;
+    }
+
+    /* Pricing → single column */
+    .pricing-grid {
+        grid-template-columns: 1fr;
+        max-width: 380px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .pricing-grid-two {
+        grid-template-columns: 1fr !important;
+        max-width: 380px !important;
+    }
+
+    /* Benefit list → single column */
+    .benefit-list {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+
+    /* Footer → single column */
     .footer-grid {
         grid-template-columns: 1fr;
         gap: 2rem;
@@ -1634,26 +1764,21 @@ body.sidebar-expanded .sidebar-social {
         justify-content: center;
     }
 
-    .hero-slide-content h1 {
-        font-size: 2.4rem;
+    .footer-large-logo {
+        width: 140px;
+        height: 140px;
     }
 
-    .section-title {
-        font-size: 2rem;
-    }
-
-    .benefit-list {
-        grid-template-columns: 1fr;
-    }
-
+    /* Testimonials */
     .carousel-container {
         gap: 0.5rem;
     }
 
     .carousel-btn {
-        width: 38px;
-        height: 38px;
+        width: 36px;
+        height: 36px;
         font-size: 1rem;
+        flex-shrink: 0;
     }
 
     .testimonial-card {
@@ -1661,15 +1786,106 @@ body.sidebar-expanded .sidebar-social {
     }
 
     .quote-box {
-        padding: 2rem 1.5rem;
+        padding: 1.75rem 1.25rem;
+    }
+
+    /* Download items — allow wrapping button on small screens */
+    .download-item {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        padding: 1rem 1.25rem;
+    }
+
+    /* Info / policy cards */
+    .info-card {
+        max-width: 100%;
+    }
+
+    /* FAQ */
+    .faq-list {
+        margin-top: 2rem;
     }
 }
 
 @media (max-width: 600px) {
+    /* Header contact number hidden — too cramped */
     .top-header-contact {
         display: none !important;
     }
+
+    /* Logo text hidden when very narrow */
     .top-header-logo span {
         display: none !important;
+    }
+
+    /* Reduce "Book Free Trial" button padding */
+    .top-header-btn {
+        padding: 0.45rem 0.85rem;
+        font-size: 0.78rem;
+        white-space: nowrap;
+    }
+
+    /* Hero */
+    .hero-slider {
+        height: 55vh;
+        min-height: 240px;
+    }
+
+    .hero-slide-content {
+        width: 94%;
+        padding: 1.25rem 1rem;
+    }
+
+    .hero-slide-content h1 {
+        font-size: 1.75rem;
+    }
+
+    .hero-badge {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.75rem;
+        margin-bottom: 0.9rem;
+    }
+
+    /* Section spacing */
+    .section-title {
+        font-size: 1.6rem;
+    }
+
+    /* Steps list */
+    .steps-list {
+        gap: 1.2rem;
+    }
+
+    /* Footer bottom */
+    .footer-bottom p {
+        font-size: 0.82rem;
+    }
+
+    /* Download item info text wrapping */
+    .download-item-info {
+        flex-wrap: wrap;
+    }
+
+    /* Pricing card */
+    .pricing-price {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .container {
+        padding: 0 0.85rem;
+    }
+
+    .top-header {
+        padding: 0 0.85rem;
+    }
+
+    .hero-slide-content h1 {
+        font-size: 1.55rem;
+    }
+
+    .section-title {
+        font-size: 1.45rem;
     }
 }
