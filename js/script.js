@@ -179,14 +179,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.textContent = 'Sending...';
                 btn.disabled = true;
 
-                setTimeout(() => {
-                    btn.textContent = 'Sent ✓';
-                    form.reset();
+                // Send form data to Formspree asynchronously
+                fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        btn.textContent = 'Sent ✓';
+                        form.reset();
+                    } else {
+                        btn.textContent = 'Error ✗';
+                    }
+                })
+                .catch(error => {
+                    btn.textContent = 'Error ✗';
+                })
+                .finally(() => {
                     setTimeout(() => {
                         btn.textContent = originalText;
                         btn.disabled = false;
-                    }, 2500);
-                }, 1200);
+                    }, 3000);
+                });
             }
         });
     });

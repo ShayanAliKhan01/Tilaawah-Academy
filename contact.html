@@ -109,11 +109,11 @@
                     <!-- Left: Contact Form -->
                     <div class="contact-form-block">
                         <h2 class="section-title">Get In Touch</h2>
-                        <form class="contact-form" data-contact-form>
-                            <input type="text" placeholder="Your Name" required>
-                            <input type="email" placeholder="Email Address" required>
-                            <input type="tel" placeholder="Phone (with country code)" required>
-                            <textarea placeholder="Your Message" rows="6" required></textarea>
+                        <form action="https://formspree.io/f/maqkoqyz" method="POST" class="contact-form" data-contact-form>
+                            <input type="text" name="name" placeholder="Your Name" required>
+                            <input type="email" name="email" placeholder="Email Address" required>
+                            <input type="tel" name="phone" placeholder="Phone (with country code)" required>
+                            <textarea name="message" placeholder="Your Message" rows="6" required></textarea>
                             <button type="submit" class="swiss-btn-gold">Send Message</button>
                         </form>
                     </div>
