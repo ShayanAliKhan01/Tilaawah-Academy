@@ -181,6 +181,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ==========================================================================
+    // TOAST NOTIFICATION SYSTEM
+    // ==========================================================================
+    let toastTimer = null;
+
+    function showToast(type, title, message) {
+        // Remove any existing toast first
+        const existing = document.querySelector('.toast');
+        if (existing) existing.remove();
+        if (toastTimer) clearTimeout(toastTimer);
+
+        const icon = type === 'success' ? '✓' : '✕';
+        const toast = document.createElement('div');
+        toast.className = `toast${type === 'error' ? ' toast--error' : ''}`;
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'polite');
+        toast.innerHTML = `
+            <div class="toast-icon">${icon}</div>
+            <div class="toast-body">
+                <div class="toast-title">${title}</div>
+                <div class="toast-message">${message}</div>
+            </div>
+            <button class="toast-close" aria-label="Close notification">&times;</button>
+        `;
+
+        document.body.appendChild(toast);
+
+        // Trigger slide-in (needs a frame delay for transition to fire)
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => toast.classList.add('toast--show'));
+        });
+
+        // Close button
+        toast.querySelector('.toast-close').addEventListener('click', () => {
+            dismissToast(toast);
+        });
+
+        // Auto-dismiss after 5 seconds
+        toastTimer = setTimeout(() => dismissToast(toast), 5000);
+    }
+
+    function dismissToast(toast) {
+        toast.classList.remove('toast--show');
+        toast.addEventListener('transitionend', () => toast.remove(), { once: true });
+    }
+
+
+    // ==========================================================================
     // CONTACT FORM HANDLING
     // ==========================================================================
     const contactForms = document.querySelectorAll('[data-contact-form]');
@@ -204,20 +251,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .then(response => {
                     if (response.ok) {
-                        btn.textContent = 'Sent ✓';
                         form.reset();
+                        showToast(
+                            'success',
+                            'Message Sent Successfully!',
+                            'JazakAllah Khair! We\'ve received your message and will get back to you within 24 hours.'
+                        );
                     } else {
-                        btn.textContent = 'Error ✗';
+                        showToast(
+                            'error',
+                            'Submission Failed',
+                            'Something went wrong. Please try again or contact us directly on WhatsApp.'
+                        );
                     }
                 })
-                .catch(error => {
-                    btn.textContent = 'Error ✗';
+                .catch(() => {
+                    showToast(
+                        'error',
+                        'Network Error',
+                        'Please check your internet connection and try again.'
+                    );
                 })
                 .finally(() => {
-                    setTimeout(() => {
-                        btn.textContent = originalText;
-                        btn.disabled = false;
-                    }, 3000);
+                    btn.textContent = originalText;
+                    btn.disabled = false;
                 });
             }
         });
